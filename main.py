@@ -19,13 +19,11 @@ if __name__ == "__main__":
     incomes.append(CashFlow("Ljob", 25000, currentYear, retireYear, 0))
     incomes.append(CashFlow("Jjob", 50000, currentYear, retireYear, 0))
     incomes.append(CashFlow("Ljob", 50000, 2035, 2042, inflation))
-    incomes.append(CashFlow("RE_Income", 1100*2*12, 2020, defDeadYear, inflation))
     incomes.append(CashFlow("JSocSec", 25000, govtRetireYear, defDeadYear, inflation))      # https://smartasset.com/retirement/social-security-calculator#vl3RcQqwQG
     incomes.append(CashFlow("LSocSec", 25000, govtRetireYear, defDeadYear, inflation))      # SocSec gets COLA adjustments
 
     # create expense sources:
     expenses.append(CashFlow("MyMortgage", -2000*12, currentYear, 2021 + 30, 0))
-    expenses.append(CashFlow("RE_Mortgage", -1900*12, 2018, 2018 + 30, 0 ))
     expenses.append(CashFlow("Spending", -3000*12, currentYear, defDeadYear, inflation))
 
     # simulate retirement

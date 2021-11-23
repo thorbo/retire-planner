@@ -1,8 +1,8 @@
 import math
-# TODO: deductions
 
-# Tax brackets represented as dict:
-# key: bracket upper limit, value: bracket tax rate
+# taxes are based on married filing jointly
+
+# Tax brackets represented as dict(bracket upper limit: bracket tax rate)
 brackets_fed_married_jointly = {
         20500: 0.10,   
         83550: 0.12, 
@@ -15,14 +15,14 @@ brackets_fed_married_jointly = {
 
 brackets_state = {
     "ca" : {
-        8932: 0.01, 
-        21175: 0.02,
-        33421: 0.04,
-        46394: 0.06,
-        58634: 0.08,
-        299508: 0.093,
-        359407: 0.103,
-        599012: 0.113, 
+        17864: 0.01, 
+        42350: 0.02,
+        66842: 0.04,
+        92788: 0.06,
+        117268: 0.08,
+        599016: 0.093,
+        718814: 0.103,
+        1198024: 0.113, 
         math.inf: 0.123
     },
     "pa": {
@@ -48,6 +48,12 @@ brackets_LT_capital_gains = {
     math.inf: 0.2
 }
 
+standard_deductions = {
+    "fed": 25100, 
+    "ca": 9202,
+    "pa": 0,
+}
+
 def tax(income, bracketName):
     if income <= 0:
         return 0
@@ -67,19 +73,22 @@ def tax(income, bracketName):
 def LTCapitalGainsTax(income):
     return tax(income, brackets_LT_capital_gains)
 
+def stateTax(income, state):
+    income -= standard_deductions[state]
+    return tax(income, brackets_state[state])
+
+def federalTax(income):
+    income -= standard_deductions["fed"]
+    return tax(income, brackets_fed_married_jointly)
+
+def localTax(income, city):
+    return tax(income, brackets_city[city])
+
+def ficaTax(income):
+    return 0.075 * income
+
 def incomeTax(income, state, city):
-
-    def stateTax(income, state):
-        return tax(income, brackets_state[state])
-
-    def federalTax(income):
-        return tax(income, brackets_fed_married_jointly)
-
-    def localTax(income, city):
-        return tax(income, brackets_city[city])
-
-    def ficaTax(income):
-        return 0.075 * income
-
-    # print(income, stateTax(income, state) + federalTax(income) + localTax(income))
     return stateTax(income, state) + federalTax(income) + localTax(income, city) + ficaTax(income)
+
+print(stateTax(100000, "ca"))
+print(federalTax(100000))
