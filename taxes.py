@@ -89,6 +89,3 @@ def ficaTax(income):
 
 def incomeTax(income, state, city):
     return stateTax(income, state) + federalTax(income) + localTax(income, city) + ficaTax(income)
-
-print(stateTax(100000, "ca"))
-print(federalTax(100000))

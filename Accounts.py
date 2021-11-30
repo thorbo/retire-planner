@@ -32,7 +32,7 @@ class InvestmentAccount():
 
     def sell(self, amount, bAccount):
         # return: amount not sold
-        # taxes = LTCapitalGainsTax(amount)
+        # TODO: LTCapitalGainsTax(amount)
         
         while self.stocks:
             # always operate on the earliest stock (first in list)
@@ -41,14 +41,14 @@ class InvestmentAccount():
                 percentToSell = amount / stockAmount
                 self.stocks[0][0] -=  self.stocks[0][0] * percentToSell
                 self.stocks[0][1] -=  self.stocks[0][1] * percentToSell
-                bAccount.deposit(amount)
+                bAccount and bAccount.deposit(amount)
                 return 0
             else:
-                bAccount.deposit(stockAmount)
+                bAccount and bAccount.deposit(stockAmount)
                 amount -= stockAmount
                 self.stocks.pop(0)
 
-        # any amount here is amount not sold in this transaction
+        # any amount remaining is amount not sold in this transaction
         return amount
 
     def buy(self, amount):

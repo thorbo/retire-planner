@@ -15,19 +15,17 @@ def simulate(bAccount, iAccount, fo1kAccount, incomes, expenses, startYear, endY
         incomeTotal = 0
         for income in incomes:
             if income.startYear <= year <= income.endYear:
-                netIncome += income.amount
                 incomeTotal += income.amount
                 income.annualUpdate()
 
         # TODO: check this logic... how is 401K taxed?
-        # 401K 
+        # 401K income
         if year >= govtRetireYear:
             fo1withdraw = 0.04 * fo1kAccount.balance()
-            fo1kAccount.sell(fo1withdraw, bAccount)
+            fo1kAccount.sell(fo1withdraw, None) # We'll deposit this into the bank later, after taxing it
             incomeTotal += fo1withdraw
-            netIncome += fo1withdraw
-        
         incomeData.append(incomeTotal)
+        netIncome += incomeTotal
 
         # Handle taxes
         netIncome -= incomeTax(netIncome, "ca", 'lake forest')
@@ -36,10 +34,10 @@ def simulate(bAccount, iAccount, fo1kAccount, incomes, expenses, startYear, endY
         expenseTotal = 0
         for expense in expenses:
             if expense.startYear <= year <= expense.endYear:
-                netIncome += expense.amount # expenses are negative
                 expenseTotal -= expense.amount
                 expense.annualUpdate()
         expenseData.append(expenseTotal)
+        netIncome -= expenseTotal
 
         # Handle end of year income or losses
         if netIncome >= 0:
@@ -50,6 +48,7 @@ def simulate(bAccount, iAccount, fo1kAccount, incomes, expenses, startYear, endY
             if loss <= bAccount.balance:
                 bAccount.withdraw(loss)
             else:
+                # sell investments to cover loss
                 deficit = iAccount.sell(loss, bAccount)
                 bAccount.withdraw(loss)
         
@@ -63,10 +62,6 @@ def simulate(bAccount, iAccount, fo1kAccount, incomes, expenses, startYear, endY
         if bAccount.overBalance():
             iAccount.buy(bAccount.overBalance())
             bAccount.withdraw(bAccount.overBalance())
-
-        # Sell stocks if not enough in bank
-        # else:
-        #     iAccount.sell(bAccount.balanceLimit - bAccount.balance, bAccount)
 
         # Store this year's end of year data as start of next years datat
         bankData.append(bAccount.balance)

@@ -1,4 +1,4 @@
 # created by virtualenv automatically
 venv/*
-vals.txt
+vals*.txt
 __pycache__
